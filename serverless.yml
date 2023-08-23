@@ -1,0 +1,57 @@
+service: aws-serverless-api-v2
+
+frameworkVersion: "3"
+
+# Specify donenv
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  create:
+    handler: handler.create
+    events:
+      - http:
+          path: /
+          method: post
+  readAll:
+    handler: handler.read
+    events:
+      - http:
+          path: /
+          method: get
+  readOne:
+    handler: handler.read
+    events:
+      - http:
+          path: /{id}
+          method: get
+  update:
+    handler: handler.update
+    events:
+      - http:
+          path: /{id}
+          method: put
+  delete:
+    handler: handler.deleteItem
+    events:
+      - http:
+          path: /{id}
+          method: delete
+
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - "@fauna-labs/serverless-fauna"
+
+fauna:
+  version: 10
+  client:
+    secret: ${env:FAUNA_SECRET}
+  collections:
+    Inventory: 
+      name: Inventory
