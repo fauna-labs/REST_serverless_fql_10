@@ -170,7 +170,7 @@ var update = function (event) { return __awaiter(void 0, void 0, void 0, functio
                 console.log('Path Parameters:', event.pathParameters.id);
                 id = event.pathParameters.id;
                 data = JSON.parse(event.body);
-                return [4 /*yield*/, client.query((0, fauna_1.fql)(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    let itemToUpdate = Inventory.byId(", ");\n    itemToUpdate!.update(", ")"], ["\n    let itemToUpdate = Inventory.byId(", ");\n    itemToUpdate!.update(", ")"])), id, data))];
+                return [4 /*yield*/, client.query((0, fauna_1.fql)(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n      let itemToUpdate = Inventory.byId(", ");\n      itemToUpdate!.update(", ")"], ["\n      let itemToUpdate = Inventory.byId(", ");\n      itemToUpdate!.update(", ")"])), id, data))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, {

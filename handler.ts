@@ -1,5 +1,11 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
-import { Client, fql } from 'fauna';
+import { Client, QuerySuccess, fql } from 'fauna';
+
+type InventoryItem = {
+  name: string;
+  price: number;
+  quantity: number;
+};
 
 const client = new Client({ secret: process.env.FAUNA_SECRET });
 
@@ -12,7 +18,7 @@ export const create: APIGatewayProxyHandler = async (event) => {
       };
     }
 
-    const data = JSON.parse(event.body);
+    const data = JSON.parse(event.body) as InventoryItem;
     
     if (!data) {
       return {
@@ -21,7 +27,7 @@ export const create: APIGatewayProxyHandler = async (event) => {
       };
     }
 
-    const response = await client.query(
+    const response: QuerySuccess<InventoryItem> = await client.query(
       fql`Inventory.create(${data})`
     );
     
@@ -50,7 +56,7 @@ export const deleteItem: APIGatewayProxyHandler = async (event) => {
   const id = String(event.pathParameters.id);
 
   try {
-    const response = await client.query(fql`
+    const response: QuerySuccess<InventoryItem> = await client.query(fql`
       let toDelete = Inventory.byId(${id})
       toDelete!.delete()
     `);
@@ -73,7 +79,7 @@ export const read: APIGatewayProxyHandler = async (event) => {
         console.log('Path Parameters:', event.pathParameters.id);
 
         const id = String(event.pathParameters.id);
-        const response = await client.query(
+        const response: QuerySuccess<InventoryItem> = await client.query(
             fql`Inventory.byId(${id})`
         );
         return {
@@ -118,9 +124,9 @@ export const update: APIGatewayProxyHandler = async (event) => {
     const id = event.pathParameters.id;
     const data = JSON.parse(event.body);
 
-    const response = await client.query(fql`
-    let itemToUpdate = Inventory.byId(${id});
-    itemToUpdate!.update(${data})`
+    const response: QuerySuccess<InventoryItem> = await client.query(fql`
+      let itemToUpdate = Inventory.byId(${id});
+      itemToUpdate!.update(${data})`
     );
 
     return {
